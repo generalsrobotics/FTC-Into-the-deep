@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
 public  class AutoTest extends LinearOpMode {
 
-    public static double lineToBar = -35;
+    public static double lineToBar = -31;
 
     @Override
     public void runOpMode() {

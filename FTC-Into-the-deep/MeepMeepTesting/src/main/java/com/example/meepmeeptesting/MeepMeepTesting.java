@@ -17,7 +17,10 @@ public class MeepMeepTesting {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-36, -60, Math.toRadians(270)))
                         .setTangent(Math.toRadians(135))
-                        .lineToXLinearHeading(-49, Math.toRadians(230))
+                        .lineToXLinearHeading(-50, Math.toRadians(230))
+                        .setTangent(Math.toRadians(45))
+                        .lineToY(-55)
+                        .lineToY(-45)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

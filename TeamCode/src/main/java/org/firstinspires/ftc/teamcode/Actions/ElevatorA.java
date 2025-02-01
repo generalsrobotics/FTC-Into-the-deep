@@ -62,6 +62,8 @@ public class ElevatorA {
     private double leftencoDer;
     private double rightencoDer;
 
+    public HardwareMap hwMap;
+
 
     public ElevatorA(HardwareMap hdwMap) {
         this.hdwMap = hdwMap;
@@ -74,6 +76,8 @@ public class ElevatorA {
         elevatorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorRight.setDirection(DcMotor.Direction.REVERSE);
+
+        hwMap = hdwMap;
 
 
         leftencoDer = elevatorLeft.getCurrentPosition();
@@ -109,6 +113,22 @@ public class ElevatorA {
 
         }
 
+    }
+    public class AtLocation implements Action{
+        int targetLocation;
+        private DcMotor leftMotor;
+
+        public AtLocation (int targetLocation, HardwareMap hwMap){
+            this.targetLocation = targetLocation;
+            leftMotor = hdwMap.dcMotor.get("elevatorLeft");
+
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+            return leftMotor.getCurrentPosition() <= targetLocation;
+        }
     }
     public void updateArmLocation(double reference) {
 
@@ -171,7 +191,13 @@ public class ElevatorA {
     public  void setTargetPosition(int targetPosition){
         this.targetPosition = targetPosition;
     }
+    public Action atLocation(int targetPosition){
+        return new AtLocation(targetPosition, hwMap);
+    }
 
+    public boolean atPosition(int targetPosition){
+        return elevatorLeft.getCurrentPosition() >= targetPosition;
+    }
 
 }
 

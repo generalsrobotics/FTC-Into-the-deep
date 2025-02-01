@@ -11,7 +11,9 @@ public class BicepA {
     public Servo bicepLeft, bicepRight;
     public static final double bicepPositionDown = .93;
     public static final double bicepPositionUp = .53;
-    public static final double initPos = .54;
+    public static final double initPos = .45;
+    public static double scorePos = .55;
+
 
 
     public BicepA(HardwareMap hwMap) {
@@ -40,6 +42,17 @@ public class BicepA {
         }
     }
 
+    public class BicepScoreHigh implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            bicepLeft.setPosition(1 - scorePos);
+            bicepRight.setPosition(scorePos);
+            return false;
+        }
+    }
+
+
 
     public Action bicepUp() {
         return new BicepUp();
@@ -49,10 +62,25 @@ public class BicepA {
     public Action bicepDown(){
         return new BicepDown();
     }
+    public Action bicepScoreHigh(){
+        return new BicepScoreHigh();
+    }
 
     public void init(){
         bicepLeft.setPosition(1-initPos);
         bicepRight.setPosition(initPos);
+    }
+
+    public Action bicepInit(){
+        return new Action(){
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                bicepLeft.setPosition(1-initPos);
+                bicepRight.setPosition(initPos);
+                return false;
+            }
+        };
     }
 }
 

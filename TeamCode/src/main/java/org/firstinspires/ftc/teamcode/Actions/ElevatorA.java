@@ -18,6 +18,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 */
 package org.firstinspires.ftc.teamcode.Actions;
 
+import android.provider.Settings;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -39,8 +41,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class ElevatorA {
     private HardwareMap hdwMap;
-    private DcMotor elevatorLeft;
+     DcMotor elevatorLeft;
     private DcMotor elevatorRight;
+
+    private int targetPosition = 0;
+     boolean init = false;
+     boolean reached = true;
+
 
     // PID Vars
     private double Kp = .0015;
@@ -78,19 +85,31 @@ public class ElevatorA {
     }
 
 
-    public class MoveArm implements Action {
 
+
+    public class MoveElevatoDynamicly implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            updateArmLocation(1900);
-            packet.put("left enco", elevatorLeft.getCurrentPosition());
+            updateArmLocation(targetPosition);
             return true;
         }
     }
 
+    public  class SetTargetPosition implements  Action{
+        int target;
+        public SetTargetPosition(int targetPosition){
+            this.target = targetPosition;
 
-    // public String updateArmLocation(Gamepad gamepad1)
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            setTargetPosition(target);
+            return false;
+
+        }
+
+    }
     public void updateArmLocation(double reference) {
 
         this.reference = reference;
@@ -142,9 +161,18 @@ public class ElevatorA {
 
     }
 
-    public Action moveArm(){
-        return new MoveArm();
+    public Action MoveArm(){
+        return new MoveElevatoDynamicly();
     }
+    public Action setTargetPos(int targetPosition){
+        return new SetTargetPosition(targetPosition);
+    }
+
+    public  void setTargetPosition(int targetPosition){
+        this.targetPosition = targetPosition;
+    }
+
+
 }
 
 

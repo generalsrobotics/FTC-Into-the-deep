@@ -11,6 +11,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Actions.BicepA;
+import org.firstinspires.ftc.teamcode.Actions.ClawA;
 import org.firstinspires.ftc.teamcode.Actions.ElevatorA;
 import org.firstinspires.ftc.teamcode.Actions.ExtensionA;
 
@@ -19,38 +21,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
-public class AutoTest extends LinearOpMode {
+public  class AutoTest extends LinearOpMode {
+
+    public static double lineToBar = -35;
+
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(0, -60, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         ExtensionA extention = new ExtensionA(hardwareMap);
         ElevatorA elevator = new ElevatorA(hardwareMap);
-
+        ClawA claw = new ClawA(hardwareMap);
+        BicepA bicep = new BicepA(hardwareMap);
 
         Servo ext = hardwareMap.get(Servo.class, "ext");
         DcMotor elevatorLeft = hardwareMap.get(DcMotor.class, "elevatorLeft");
 
-
-
-        TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                /*.lineToYSplineHeading(33, Math.toRadians(0))
-                .waitSeconds(2)
-                .setTangent(Math.toRadians(90))
-                .lineToY(48)
-                .setTangent(Math.toRadians(0))
-                .lineToX(32)
-                .strafeTo(new Vector2d(44.5, 30))
-                .turn(Math.toRadians(180))
-                .lineToX(47.5)
-                .waitSeconds(3)
-
-                 */
-                .strafeTo(new Vector2d(8, 20))
-                .turn(Math.toRadians(45))
-                //.setTangent(Math.toRadians(-45))
-                //.lineToY(5)
-                ;
 
 
 
@@ -59,21 +45,28 @@ public class AutoTest extends LinearOpMode {
                 .forward(5)
                 .build();
 */
-        telemetry.addLine("init");
-
-
-
-
-        Actions.runBlocking( new ParallelAction( elevator.moveArm(),  new SequentialAction(extention.extendOut(), new SleepAction(2), extention.extendIn())));
-
-
-       telemetry.update();
+        claw.initClaw();
+        bicep.init();
         waitForStart();
 
 
         if(isStopRequested()) return;
 
-        //drive.followTrajectory(tab1);
+        Actions.runBlocking(
+                drive.actionBuilder(initialPose)
+
+                        .afterTime(0, extention.extendOut())
+                        .lineToY(lineToBar)
+                        .afterTime(0, extention.extendIn())
+                        .waitSeconds(5)
+
+                       // .lineToY(-60)
+//                        .setTangent(Math.toRadians(0))
+//                        .splineToConstantHeading(new Vector2d(36,-23), Math.toRadians(90))
+//                        .splineToConstantHeading(new Vector2d(47,-5),Math.toRadians(90))
+//                        .splineToConstantHeading(new Vector2d(47,-50),Math.toRadians(90))
+                        .build());
+
 
         telemetry.update();
     }

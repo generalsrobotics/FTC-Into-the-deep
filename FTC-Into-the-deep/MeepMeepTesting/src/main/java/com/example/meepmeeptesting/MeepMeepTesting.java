@@ -20,7 +20,11 @@ public class MeepMeepTesting {
                         .lineToXLinearHeading(-50, Math.toRadians(230))
                         .setTangent(Math.toRadians(45))
                         .lineToY(-55)
-                        .lineToY(-45)
+                        .setTangent(Math.toRadians(45))
+                        .splineToLinearHeading(new Pose2d(-51,-38,Math.toRadians(90)), Math.toRadians(90))
+                        .setReversed(true)
+                        .setTangent(225)
+                        .splineToLinearHeading(new Pose2d(-59,-55,Math.toRadians(230)), Math.toRadians(225))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

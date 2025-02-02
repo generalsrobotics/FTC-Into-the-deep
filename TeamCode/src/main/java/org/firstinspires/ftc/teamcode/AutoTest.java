@@ -69,7 +69,22 @@ public  class AutoTest extends LinearOpMode {
 
         Action scoreHighB = scoreInHighBasket.build();
 
+        Action dropInBasket = new SequentialAction(
+                new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                return elevatorLeft.getCurrentPosition() <= highBasketPos - 100;
+            }},
+                bicep.bicepScoreHigh(),
+                new SleepAction(.5),
+                claw.openClaw(),
+                bicep.bicepUp(),
+                new SleepAction(1));
 
+        Action collectSample = new SequentialAction(
+                claw.openClaw(),
+                bicep.bicepDown(),
+                bicep.bicepInit());
 
 
         waitForStart();
@@ -78,20 +93,26 @@ public  class AutoTest extends LinearOpMode {
         if(isStopRequested()) return;
 
         Actions.runBlocking(
-            new ParallelAction(elevator.MoveArm(),drive.actionBuilder(initialPose)
+            new ParallelAction(
+                    elevator.MoveArm(),
+
+                    drive.actionBuilder(initialPose)
                     .setTangent(Math.toRadians(135))
                     .afterTime(0, elevator.MoveArm())
                     .afterTime(0, elevator.setTargetPos(highBasketPos))
                     .lineToXLinearHeading(-50, Math.toRadians(220))
                     .setTangent(Math.toRadians(230))
                     .lineToY(-55)
-                    .stopAndAdd( new SequentialAction(new Action() {@Override
-                    public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                        return elevatorLeft.getCurrentPosition() <= highBasketPos - 100;
-                    }
-
-                    }, bicep.bicepScoreHigh(), new SleepAction(.5), claw.openClaw(), bicep.bicepUp(), new SleepAction(1)))
-                    .lineToY(-45)
+                    .stopAndAdd(dropInBasket)
+                    .afterTime(0, elevator.setTargetPos(10))
+                    .setTangent(Math.toRadians(45))
+                    .splineToLinearHeading(new Pose2d(-51,-38,Math.toRadians(90)), Math.toRadians(90))
+                    .afterTime(1,collectSample)
+                    .afterTime(0, elevator.setTargetPos(highBasketPos))
+                    .setReversed(true)
+                    .setTangent(225)
+                    .splineToLinearHeading(new Pose2d(-59,-55,Math.toRadians(230)), Math.toRadians(225))
+                    .stopAndAdd(dropInBasket)
                     .build()));
 
 

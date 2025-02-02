@@ -84,7 +84,7 @@ public  class AutoTest extends LinearOpMode {
                     .afterTime(0, elevator.setTargetPos(highBasketPos))
                     .lineToXLinearHeading(-50, Math.toRadians(220))
                     .setTangent(Math.toRadians(230))
-                    .lineToY(lineToBar)
+                    .lineToY(-55)
                     .stopAndAdd( new SequentialAction(new Action() {@Override
                     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                         return elevatorLeft.getCurrentPosition() <= highBasketPos - 100;

@@ -10,7 +10,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,18 +23,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@Autonomous(name = "BLUE_TEST_AUTO_PIXEL", group = "Autonomous")
-public  class AutoTest extends LinearOpMode {
-
-    public static double lineToBar = -55;
+@Autonomous(name = "BasketAutonomous", group = "Autonomous")
+public  class BasketAuto extends LinearOpMode {
     public static int highBasketPos = 2700;
     public static double scoreHigh = .55;
-
-    public static double bicepInit = .35;
-
-    public static double lineTo2 = -31;
-
-
     @Override
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(-36, -60, Math.toRadians(270));
@@ -49,25 +40,9 @@ public  class AutoTest extends LinearOpMode {
         DcMotor elevatorLeft = hardwareMap.get(DcMotor.class, "elevatorLeft");
         BicepA.scorePos = scoreHigh;
 
-
-
-        /*Trajectory myTrajectory = drive.trajectoryBuilder(initialPose)
-                .strafeRight(10)
-                .forward(5)
-                .build();
-*/
         claw.initClaw();
         bicep.init();
 
-        TrajectoryActionBuilder scoreInHighBasket = drive.actionBuilder(initialPose)
-                .setTangent(Math.toRadians(135))
-                .afterTime(0, elevator.MoveArm())
-                .afterTime(0, elevator.setTargetPos(highBasketPos))
-                .lineToXLinearHeading(-50, Math.toRadians(220))
-                .setTangent(Math.toRadians(230))
-                .lineToY(lineToBar);
-
-        Action scoreHighB = scoreInHighBasket.build();
 
         Action dropInBasket = new SequentialAction(
                 new Action() {
